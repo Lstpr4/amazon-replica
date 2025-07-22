@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon - Shop Online</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/png" href="https://www.amazon.com/favicon.ico">
+    <style>
+        /* Critical styles to ensure proper display */
+        .product-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            width: calc(33.333% - 20px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 480px; /* Increased height for more space */
+            overflow: hidden;
+        }
+        
+        .product-item img {
+            max-width: 100%;
+            height: 200px; /* Increased height for images */
+            object-fit: contain; /* Maintain aspect ratio */
+            display: block;
+            margin: 0 auto 15px;
+        }
+        
+        .product-item h3 {
+            margin: 10px 0;
+            font-size: 0.92em;
+            line-height: 1.5;
+            height: 4.5em; /* Allow 3 lines of text */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .rating {
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        
+        .price {
+            margin: 8px 0 5px;
+            font-weight: bold;
+        }
+        
+        .discount {
+            margin-bottom: 15px;
+            font-size: 0.85em;
+        }
+        
+        .product-item button {
+            margin-top: auto; /* Push button to bottom */
+            background-color: #ffd814;
+            border: 1px solid #fcd200;
+            border-radius: 20px;
+            padding: 8px 0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .product-item button:hover {
+            background-color: #f7ca00;
+        }
+        
+        /* Special styling for specific products */
+        #airpods-pro h3,
+        #bose-headphones h3,
+        #echo-dot h3 {
+            height: auto;
+            min-height: 4.5em;
+            margin-bottom: 12px;
+        }
+        
+        /* Top bar styles - updated */
+        .top-bar {
+            background-color: #131921;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .top-bar-left, .top-bar-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .top-bar-left {
+            flex: 1;
+        }
+        
+        .top-bar-right {
+            gap: 15px;
+        }
+        
+        .region-selector {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+            margin-right: 15px;
+        }
+        
+        .region-selector img {
+            height: 15px;
+            margin-right: 5px;
+        }
+        
+        .login-section {
+            cursor: pointer;
+            color: white;
+        }
+        
+        .login-section:hover, .region-selector:hover {
+            color: #ff9900;
+        }
+        
+        /* Updated logo styles */
+        .top-logo {
+            max-height: 40px; /* Increased logo size */
+            margin-right: 19px;
+            margin-top: 10px;
+        }
+        
+        /* Updated search bar styles */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            max-width: 800px;
+            margin: 0 15px;
+        }
+        
+        .search-bar input {
+            padding: 10px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            width: 100%;
+            height: 40px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        
+        .search-bar button {
+            background-color: #febd69;
+            color: #111;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 0 10px;
+            height: 40px;
+            cursor: pointer;
+        }
+        
+        .search-bar button:hover {
+            background-color: #f3a847;
+        }
+    /* Menu container and button styles */
+    .menu-container {
+        display: flex;
+        background-color: #232f3e;
+        width: 100%;
+    }
+    
+    .menu-button {
+        display: flex;
+        align-items: center;
+        background: none;
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 10px;
+    }
+    
+    .menu-button:hover {
+        border: 1px solid white;
+        padding: 7px 11px;
+    }
+    
+    .menu-button i {
+        margin-right: 5px;
+        font-size: 16px;
+    }
+    
+    /* Bottom nav adjustments */
+    .bottom-nav {
+        flex: 1;
+        border-left: 1px solid #3a4553;
+    }
+    
+    /* Sidebar overlay */
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+        display: none;
+    }
+    
+    /* Sidebar menu styles */
+    .sidebar-menu {
+        position: fixed;
+        top: 0;
+        left: -330px; /* Start off-screen */
+        width: 330px;
+        height: 100%;
+        background-color: white;
+        z-index: 999;
+        overflow-y: auto;
+        transition: left 0.3s ease;
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .sidebar-menu.active {
+        left: 0; /* Slide in */
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+    
+    /* Sidebar header */
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #131921;
+        padding: 15px;
+        color: white;
+    }
+    
+    .sidebar-user {
+        display: flex;
+        align-items: center;
+    }
+    
+    .sidebar-user i {
+        font-size: 24px;
+        margin-right: 10px;
+    }
+    
+    .sidebar-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    
+    /* Sidebar content */
+    .sidebar-content {
+        padding: 10px 0;
+    }
+    
+    .sidebar-section {
+        padding: 10px 25px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .sidebar-section h3 {
+        font-size: 16px;
+        margin: 10px 0;
+    }
+    
+    .sidebar-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .sidebar-section ul li {
+        margin: 10px 0;
+    }
+    
+    .sidebar-section ul li a {
+        color: #111;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .sidebar-section ul li a:hover {
+        text-decoration: underline;
+    }
+    
+    .border-top {
+        border-top: 2px solid #eee;
+        margin-top: 10px;
+    }
+    
+    .sign-in-link {
+        background-color: #ffd814;
+        border: 1px solid #fcd200;
+        border-radius: 8px;
+        padding: 8px 12px;
+        display: inline-block;
+        width: 80%;
+        text-align: center;
+        color: #111 !important;
+        font-weight: bold;
+    }
+    
+    .sign-in-link:hover {
+        background-color: #f7ca00;
+        text-decoration: none !important;
+    }
+        /* Cart styles */
+        .cart-icon {
+            display: flex;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            margin: 0 15px;
+        }
+        
+        .cart-icon i {
+            font-size: 20px;
+            margin-right: 5px;
+        }
+        
+        /* Updated header styles */
+        header {
+            background-color: #232f3e;
+            padding: 10px 20px;
+            color: white;
+        }
+        
+        /* Bottom navigation bar */
+        .bottom-nav {
+            background-color: #232f3e;
+            padding: 8px 15px;
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            color: white;
+        }
+        
+        .bottom-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        
+        .bottom-nav a:hover {
+            border: 1px solid white;
+            padding: 7px 11px; /* Adjust for border */
+        }
+        
+        /* Account menu styles - text color fixed */
+        .account-flyout {
+            position: relative;
+        }
+        
+        .account-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            width: 220px;
+            padding: 15px;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.13);
+            display: none;
+            z-index: 1000;
+            color: #111;
+        }
+        
+        .account-flyout:hover .account-menu {
+            display: block;
+        }
+        
+        .account-menu h4 {
+            font-size: 14px;
+            margin: 0 0 10px;
+        }
+        
+        .sign-in-button {
+            background: linear-gradient(to bottom, #f8e3ad, #eeba37);
+            border: 1px solid #c89411;
+            border-radius: 3px;
+            padding: 8px 10px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #111;
+        }
+        
+        .account-menu p {
+            font-size: 12px;
+            margin: 10px 0 5px;
+        }
+        
+        .account-menu a {
+            color: #0066c0;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .account-menu a:hover {
+            text-decoration: underline;
+            color: #c45500;
+        }
+        
+        .account-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .account-menu li {
+            margin-bottom: 8px;
+        }
+        
+        .orders {
+            cursor: pointer;
+            color: white;
+            margin: 0 15px;
+        }
+        
+        .orders:hover {
+            color: #ff9900;
+        }
+        
+        /* New styles for location selector */
+        .location-selector {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: white;
+            margin-right: 15px;
+        }
+        
+        .location-selector i {
+            margin-right: 5px;
+        }
+        
+        .location-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        
+        .location-text span {
+            font-size: 12px;
+        }
+        
+        .location-text b {
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <!-- Amazon logo in top bar - enlarged -->
+            <a href="#"><img src="https://www.pngmart.com/files/23/Amazon-Logo-White-PNG-Image.png" alt="Amazon" class="top-logo"></a>
+            
+            <!-- Location selector - with your exact location -->
+            <div class="region-selector location-selector">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="location-text">
+                    <span>Deliver to</span>
+                    <b>Select your address</b>
+                </div>
+            </div>
+            
+            <!-- Search bar remains the same -->
+            <div class="search-bar">
+                <input type="text" placeholder="Search Amazon">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        
+        <div class="top-bar-right">
+            <!-- Language and flag - swapped order -->
+            <div class="region-selector">
+                <span>EN</span>
+                <i class="fas fa-caret-down"></i>
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/1200px-Flag_of_the_United_States.svg.png" alt="US Flag">
+            </div>
+            
+            <!-- Account section -->
+            <div class="login-section account-flyout">
+                <span>Hello, Sign in <b>Account & Lists</b> <i class="fas fa-caret-down"></i></span>
+                <div class="account-menu">
+                    <button class="sign-in-button">Sign in</button>
+                    <p>New customer? <a href="#">Start here.</a></p>
+                    <hr>
+                    <h4>Your Account</h4>
+                    <ul>
+                        <li><a href="#">Account</a></li>
+                        <li><a href="#">Orders</a></li>
+                        <li><a href="#">Recommendations</a></li>
+                        <li><a href="#">Browsing History</a></li>
+                        <li><a href="#">Watchlist</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Returns & Orders - newly added -->
+            <div class="orders">
+                <span>Returns <br><b>& Orders</b></span>
+            </div>
+            
+            <!-- Cart - moved from header -->
+            <div class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span><b>Cart</b></span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom navigation with requested categories -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item">Amazon Haul</a>
+        <a href="#" class="nav-item">Medical Care</a>
+        <a href="#" class="nav-item">Saks</a>
+        <a href="#" class="nav-item">Best Sellers</a>
+        <a href="#" class="nav-item">Amazon Basics</a>
+        <a href="#" class="nav-item">Today's Deals</a>
+        <a href="#" class="nav-item">New Releases</a>
+        <a href="#" class="nav-item">Registry</a>
+        <a href="#" class="nav-item">Groceries</a>
+        <a href="#" class="nav-item">Prime</a>
+        <a href="#" class="nav-item">Gift Cards</a>
+        <a href="#" class="nav-item">Smart Home</a>
+    </div>
+    
+    <div class="main-container">
+        <aside class="sidebar">
+            <h3>Shop By Department</h3>
+            <ul class="category-checklist">
+                <li><input type="checkbox" id="electronics"> <label for="electronics">Electronics</label></li>
+                <li><input type="checkbox" id="clothing"> <label for="clothing">Clothing & Fashion</label></li>
+                <li><input type="checkbox" id="home"> <label for="home">Home & Kitchen</label></li>
+                <li><input type="checkbox" id="books"> <label for="books">Books</label></li>
+                <li><input type="checkbox" id="toys"> <label for="toys">Toys & Games</label></li>
+                <li><input type="checkbox" id="beauty"> <label for="beauty">Beauty & Personal Care</label></li>
+                <li><input type="checkbox" id="sports"> <label for="sports">Sports & Outdoors</label></li>
+                <li><input type="checkbox" id="grocery"> <label for="grocery">Grocery</label></li>
+            </ul>
+            
+            <h3>Price Range</h3>
+            <ul class="category-checklist">
+                <li><input type="checkbox" id="under25"> <label for="under25">Under $25</label></li>
+                <li><input type="checkbox" id="25to50"> <label for="25to50">$25 to $50</label></li>
+                <li><input type="checkbox" id="50to100"> <label for="50to100">$50 to $100</label></li>
+                <li><input type="checkbox" id="100to200"> <label for="100to200">$100 to $200</label></li>
+                <li><input type="checkbox" id="over200"> <label for="over200">Over $200</label></li>
+            </ul>
+            
+            <h3>Customer Review</h3>
+            <ul class="category-checklist">
+                <li><input type="checkbox" id="4stars"> <label for="4stars">⭐⭐⭐⭐ & Up</label></li>
+                <li><input type="checkbox" id="3stars"> <label for="3stars">⭐⭐⭐ & Up</label></li>
+                <li><input type="checkbox" id="2stars"> <label for="2stars">⭐⭐ & Up</label></li>
+            </ul>
+            
+            <h3>Brand</h3>
+            <ul class="category-checklist">
+                <li><input type="checkbox" id="apple"> <label for="apple">Apple</label></li>
+                <li><input type="checkbox" id="samsung"> <label for="samsung">Samsung</label></li>
+                <li><input type="checkbox" id="amazon"> <label for="amazon">Amazon</label></li>
+                <li><input type="checkbox" id="bose"> <label for="bose">Bose</label></li>
+                <li><input type="checkbox" id="sony"> <label for="sony">Sony</label></li>
+            </ul>
+            
+            <h3>Deals & Discounts</h3>
+            <ul class="category-checklist">
+                <li><input type="checkbox" id="todays-deals"> <label for="todays-deals">Today's Deals</label></li>
+                <li><input type="checkbox" id="prime"> <label for="prime">Prime Eligible</label></li>
+                <li><input type="checkbox" id="discount10"> <label for="discount10">10% Off or More</label></li>
+                <li><input type="checkbox" id="discount25"> <label for="discount25">25% Off or More</label></li>
+            </ul>
+            
+            <div class="category-buttons">
+                <button class="category-save">Save</button>
+                <button class="category-cancel">Cancel</button>
+            </div>
+            
+            <div class="filter-actions">
+                <button id="apply-filters" class="filter-button apply">Apply Filters</button>
+                <button id="clear-filters" class="filter-button clear">Clear All</button>
+            </div>
+        </aside>
+        
+        <main>
+            <!-- Main content remains the same -->
+            <section id="home">
+                <div class="banner">
+                    <img src="https://evolvedcommerce.com/wp-content/uploads/2024/05/prime-day-2024-box.jpg" alt="Amazon Prime Day Deals" class="banner-img">
+                </div>
+                
+                <!-- Product sections remain the same -->
+                <h2>Today's Deals</h2>
+                <div class="product-list">
+                    <div class="product-item" id="airpods-pro">
+                        <img src="https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SX679_.jpg" alt="Apple AirPods Pro">
+                        <h3>Apple AirPods Pro (2nd Generation) with MagSafe Case</h3>
+                        <div class="rating">⭐⭐⭐⭐⭐ (12,382)</div>
+                        <p class="price">$199.99</p>
+                        <p class="discount"><span>$249.99</span> Save 20%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                    <div class="product-item">
+                        <img src="https://i5.walmartimages.com/seo/SAMSUNG-55-Class-Q70C-QLED-4K-Smart-TV-QN55Q70CAFXZA-2023_af2d2797-5fb8-44d9-8cb4-3f352e2137c9.76a997aa3bbfa922a918deae713d23d7.jpeg" alt="Samsung TV">
+                        <h3>SAMSUNG 55-Inch Class QLED 4K Q80C Smart TV (2023)</h3>
+                        <div class="rating">⭐⭐⭐⭐⭐ (4,517)</div>
+                        <p class="price">$997.99</p>
+                        <p class="discount"><span>$1,197.99</span> Save 17%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                    <div class="product-item">
+                        <img src="https://m.media-amazon.com/images/G/01/kindle/journeys/5xlDnKG94P0ryVnD8MqFmnIhMKBXE2F2BxyzUQHa63Hhs3D/OWM3NzhlN2Ut._CB625115166_.jpg" alt="Kindle Paperwhite">
+                        <h3>Kindle Paperwhite (8GB) - Black - Ad-Supported</h3>
+                        <div class="rating">⭐⭐⭐⭐⭐ (8,547)</div>
+                        <p class="price">$139.99</p>
+                        <p class="discount"><span>$159.99</span> Save 12%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="products">
+                <h2>Recommended For You</h2>
+                <div class="product-list">
+                    <div class="product-item" id="bose-headphones">
+                        <img src="https://m.media-amazon.com/images/I/51JbsHSktkL._AC_SL1500_.jpg" alt="Bose Headphones">
+                        <h3>Bose QuietComfort 45 Wireless Noise Cancelling Headphones</h3>
+                        <div class="rating">⭐⭐⭐⭐⭐ (3,784)</div>
+                        <p class="price">$279.00</p>
+                        <p class="discount"><span>$329.00</span> Save 15%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                    <div class="product-item">
+                        <img src="https://m.media-amazon.com/images/I/61PUssDquYL._UF894,1000_QL80_.jpg" alt="Instant Pot">
+                        <h3>Instant Pot Duo 7-in-1 Electric Pressure Cooker, 6 Quart</h3>
+                        <div class="rating">⭐⭐⭐⭐⭐ (45,125)</div>
+                        <p class="price">$89.95</p>
+                        <p class="discount"><span>$119.99</span> Save 25%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                    <div class="product-item">
+                        <img src="https://m.media-amazon.com/images/I/71gESWzXrJL._AC_SY200_QL15_.jpg" alt="Fitbit">
+                        <h3>Fitbit Charge 5 Advanced Health & Fitness Tracker with GPS</h3>
+                        <div class="rating">⭐⭐⭐⭐ (7,245)</div>
+                        <p class="price">$119.95</p>
+                        <p class="discount"><span>$149.95</span> Save 20%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                </div>
+                
+                <h2>New Arrivals</h2>
+                <div class="product-list">
+                    <div class="product-item" id="echo-dot">
+                        <img src="https://target.scene7.com/is/image/Target/GUEST_a8bdd032-a364-445b-84f3-75216c64958d?wid=300&hei=300&fmt=pjpeg" alt="Echo Dot">
+                        <h3>All-new Echo Dot (5th Gen) with clock | Smart speaker with Alexa</h3>
+                        <div class="rating">⭐⭐⭐⭐⭐ (19,354)</div>
+                        <p class="price">$49.99</p>
+                        <p class="discount"><span>$59.99</span> Save 17%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                    <div class="product-item">
+                        <img src="https://images.thdstatic.com/productImages/a1d8c5a1-fb5a-466e-9978-d1039ec14272/svn/black-amazon-media-streaming-devices-b0bp9snvh9-64_600.jpg" alt="Fire TV Stick">
+                        <h3>Fire TV Stick 4K Max streaming device with Ambient Experience</h3>
+                        <div class="rating">⭐⭐⭐⭐⭐ (11,845)</div>
+                        <p class="price">$59.99</p>
+                        <p class="discount"><span>$69.99</span> Save 14%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                    <div class="product-item">
+                        <img src="https://m.media-amazon.com/images/I/71DCZOdq92S._AC_SX679_.jpg" alt="Samsung Galaxy Watch">
+                        <h3>Samsung Galaxy Watch 6 44mm LTE Smartwatch (2023)</h3>
+                        <div class="rating">⭐⭐⭐⭐ (2,458)</div>
+                        <p class="price">$329.99</p>
+                        <p class="discount"><span>$379.99</span> Save 13%</p>
+                        <button>Add to Cart</button>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="contact">
+                <h2>Contact Us</h2>
+                <form id="contactForm">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </section>
+        </main>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Get to Know Us</h4>
+                <ul>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">About Amazon</a></li>
+                    <li><a href="#">Investor Relations</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Make Money with Us</h4>
+                <ul>
+                    <li><a href="#">Sell products on Amazon</a></li>
+                    <li><a href="#">Become an Affiliate</a></li>
+                    <li><a href="#">Advertise Your Products</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Amazon Payment Products</h4>
+                <ul>
+                    <li><a href="#">Amazon Business Card</a></li>
+                    <li><a href="#">Shop with Points</a></li>
+                    <li><a href="#">Amazon Currency Converter</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 Amazon Replica. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
